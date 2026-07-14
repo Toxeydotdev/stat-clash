@@ -21,4 +21,4 @@
 - [x] 4.2 Add non-cached CLI and GitHub Actions validation that runs against the completed deployment URL.
 - [x] 4.3 Document the pre-deploy deterministic gate, post-deploy gate, and production deployment command.
 - [x] 4.4 Run the complete local gate and the post-deploy Playwright gate successfully.
-- [ ] 4.5 Correlate automatic GitHub validation to the exact production revision and verify it from a pushed commit.
+- [x] 4.5 Correlate automatic GitHub validation to the exact production revision and verify it from a pushed commit.
