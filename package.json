@@ -12,6 +12,8 @@
     "typecheck": "nx run-many --target=typecheck --all --exclude=workspace --outputStyle=static",
     "test": "nx run-many --target=test --all --exclude=workspace --outputStyle=static",
     "e2e": "nx run web-e2e:e2e --outputStyle=static",
+    "check:deployment": "nx run web-e2e:e2e-deployed --outputStyle=static",
+    "deploy:prod": "npx --yes netlify-cli@26.2.0 deploy --prod --filter web --skip-functions-cache && npm run check:deployment",
     "lint": "nx run workspace:lint --outputStyle=static",
     "lint:fix": "oxlint . --fix --deny-warnings",
     "format": "oxfmt .",

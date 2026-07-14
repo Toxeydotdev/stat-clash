@@ -81,12 +81,14 @@ Lifecycle cleanup such as restoring globals or automatic Testing Library cleanup
 
 ## Current Coverage
 
-- `apps/web-e2e`: seeded matchup visibility and corner swap against real servers in desktop and mobile Chromium.
+- `apps/web-e2e`: seeded matchup visibility, corner swap, browser fallback routing, API boundary behavior, and deployment-only CDN caching in desktop and mobile Chromium.
 - `apps/web`: focused render/request behavior with only the HTTP boundary replaced.
 - `libs/ui`: user activation and accessible metric output.
 - `apps/api`: deterministic controller/service outputs using real instances.
 
 Add an HTTP-level Nest test when route status codes, middleware, serialization, or validation become more complex than the browser journey proves clearly.
+
+The normal `npm run e2e` target starts owned local processes. `npm run check:deployment` sets deployment mode, starts no local servers, disables Nx caching, and runs the same product journeys plus CDN-only assertions against `DEPLOYMENT_URL` or the production Netlify URL.
 
 ## Failure Artifacts
 

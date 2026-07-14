@@ -57,6 +57,22 @@ Do not commit `dist`. Netlify runs the production build before packaging functio
 
 Netlify should report `dist/apps/web` as the publish directory and package `api.mjs` as a function. Do not replace the file-based settings with conflicting dashboard values.
 
+## Production Release
+
+Use the repository command for a CLI release:
+
+```sh
+npm run deploy:prod
+```
+
+It uses the pinned Netlify CLI version, waits for the production deployment, then runs non-cached desktop and mobile Playwright against `https://stat-clash.netlify.app`. A failed deploy or any failed browser, API, fallback, or CDN assertion makes the command fail.
+
+Netlify Git deployments are validated by `.github/workflows/deployment-validation.yml` when GitHub receives a successful Netlify deployment status. The workflow can also be started manually with a deploy or preview URL. To validate another URL locally:
+
+```sh
+DEPLOYMENT_URL=https://deploy-preview.example.netlify.app npm run check:deployment
+```
+
 ## Local Parity Check
 
 The complete repository gate already type-checks and tests the adapter and emits both API entries:

@@ -1,0 +1,50 @@
+name: Deployment validation
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: Deployment URL to validate
+        required: false
+        default: https://stat-clash.netlify.app
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deployment-validation-${{ github.event.deployment.id || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  post-deploy-checks:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+      contains(github.event.deployment_status.target_url, 'netlify'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: true
+      DEPLOYMENT_URL: ${{ github.event.inputs.deployment_url || github.event.deployment_status.target_url || 'https://stat-clash.netlify.app' }}
+    steps:
+      - name: Check out deployed revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha || github.sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Validate deployed web and API
+        run: npm run check:deployment

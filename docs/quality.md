@@ -10,22 +10,26 @@
 
 ## Commands
 
-| Command                | Purpose                                        |
-| ---------------------- | ---------------------------------------------- |
-| `npm run dev`          | Run `api` and `web` serve targets in parallel  |
-| `npm run format`       | Rewrite supported files with oxfmt             |
-| `npm run format:check` | Cached repository formatting check             |
-| `npm run lint`         | Cached oxlint scan with warnings denied        |
-| `npm run typecheck`    | Run all inferred Nx TypeScript checks          |
-| `npm test`             | Run all Jest/Vitest project tests              |
-| `npm run build`        | Build every buildable project                  |
-| `npm run spec:check`   | Strictly validate all OpenSpec artifacts       |
-| `npm run e2e`          | Run real-process Playwright projects           |
-| `npm run check:quick`  | Format, lint, typecheck, unit tests, and specs |
-| `npm run check`        | Complete merge gate, including builds and E2E  |
-| `npm run audit:prod`   | Network-dependent production dependency audit  |
+| Command                    | Purpose                                          |
+| -------------------------- | ------------------------------------------------ |
+| `npm run dev`              | Run `api` and `web` serve targets in parallel    |
+| `npm run format`           | Rewrite supported files with oxfmt               |
+| `npm run format:check`     | Cached repository formatting check               |
+| `npm run lint`             | Cached oxlint scan with warnings denied          |
+| `npm run typecheck`        | Run all inferred Nx TypeScript checks            |
+| `npm test`                 | Run all Jest/Vitest project tests                |
+| `npm run build`            | Build every buildable project                    |
+| `npm run spec:check`       | Strictly validate all OpenSpec artifacts         |
+| `npm run e2e`              | Run real-process Playwright projects             |
+| `npm run check:deployment` | Run non-cached Playwright against a deployed URL |
+| `npm run deploy:prod`      | Deploy to Netlify, then validate the live site   |
+| `npm run check:quick`      | Format, lint, typecheck, unit tests, and specs   |
+| `npm run check`            | Complete merge gate, including builds and E2E    |
+| `npm run audit:prod`       | Network-dependent production dependency audit    |
 
 The production audit is intentionally outside `npm run check` because advisory data changes independently of a commit and is not deterministic. Run it during dependency review and scheduled maintenance.
+
+Remote deployment validation is also outside `npm run check` because network and CDN state are not deterministic local inputs. Deployment-routing behavior still runs locally in the complete gate. After Netlify publishes a site, `npm run check:deployment` reruns every product journey against the real URL and adds CDN-only assertions without Nx caching. CLI production deploys invoke that gate automatically, and `.github/workflows/deployment-validation.yml` handles Netlify deployment status events and manual URL validation.
 
 The API production build emits both the standalone Node entry and the generated input for the Netlify Function. A Netlify-specific parity build can additionally be run with `npx --yes netlify-cli@26.2.0 build --offline --filter web`; it is outside the deterministic gate because the CLI is an external deployment tool rather than a locked workspace dependency. See [`deployment.md`](deployment.md).
 

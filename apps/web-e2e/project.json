@@ -16,6 +16,17 @@
         "{workspaceRoot}/libs/shared/contracts/**/*",
         "{workspaceRoot}/package-lock.json"
       ]
+    },
+    "e2e-deployed": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "playwright test",
+        "cwd": "apps/web-e2e",
+        "env": {
+          "DEPLOYMENT_E2E": "true"
+        }
+      }
     }
   }
 }

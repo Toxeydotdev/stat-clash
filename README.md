@@ -56,6 +56,8 @@ The repository includes a Netlify deployment for both parts of the application:
 
 Import the Git repository into Netlify and select `web` if its Nx monorepo picker appears. No environment variables are required for the current exhibition build. See [`docs/deployment.md`](docs/deployment.md) for architecture, local parity checks, and post-deploy verification.
 
+CLI production releases use `npm run deploy:prod`, which deploys and then runs the required Playwright gate against the live URL.
+
 ## Workspace
 
 ```text

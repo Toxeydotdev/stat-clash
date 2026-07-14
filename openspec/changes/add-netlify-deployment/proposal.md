@@ -8,6 +8,7 @@ Stat Clash currently runs only as separate local Vite and Nest processes. It nee
 - Package the existing Nest application as a Netlify Function and route `/api/*` to it on the same origin.
 - Keep the standalone Nest process for local development and Playwright while sharing application setup between both runtimes.
 - Add deployment documentation and verify that the Netlify artifacts are covered by the repository quality gate.
+- Add Playwright coverage and a required post-deploy validation command for CDN, browser-routing, and serverless API behavior.
 - Continue serving only clearly labeled deterministic exhibition data; no provider, account, persistence, or secret handling is introduced.
 
 ## Capabilities
@@ -18,7 +19,7 @@ Stat Clash currently runs only as separate local Vite and Nest processes. It nee
 
 ### Modified Capabilities
 
-None.
+- `deterministic-quality-gates`: Exercise deployment routing behavior locally in the complete gate while keeping remote post-deploy checks explicit and non-cached.
 
 ## Impact
 

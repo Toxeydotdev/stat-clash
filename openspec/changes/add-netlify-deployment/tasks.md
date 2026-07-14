@@ -14,3 +14,10 @@
 
 - [x] 3.1 Document Netlify's static/function request flow, build command, publish directory, and connection steps.
 - [x] 3.2 Validate the complete OpenSpec change strictly and review documentation for stale local-only deployment assumptions.
+
+## 4. Post-Deploy Gate
+
+- [x] 4.1 Add Playwright coverage for browser fallback, deployed API boundaries, and immutable production assets.
+- [x] 4.2 Add non-cached CLI and GitHub Actions validation that runs against the completed deployment URL.
+- [x] 4.3 Document the pre-deploy deterministic gate, post-deploy gate, and production deployment command.
+- [x] 4.4 Run the complete local gate and the post-deploy Playwright gate successfully.
