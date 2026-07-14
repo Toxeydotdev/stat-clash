@@ -1,0 +1,25 @@
+schema: spec-driven
+
+context: |
+  Product: Stat Clash, a playful arena for fair player-versus-player gaming stat comparisons.
+  Current stage: exhibition foundation using clearly labeled seeded data; no live game account data yet.
+  Stack: TypeScript, React 19, NestJS 11, Nx 23, Vite, Vitest/Jest, Playwright, Tailwind CSS 4, Radix UI, oxlint, and oxfmt.
+  Architecture: apps/web consumes apps/api through /api; reusable UI lives in libs/ui; transport contracts live in libs/shared/contracts.
+  Visual direction: dark Retro Future Arcade with cyan, magenta, and acid accents; bold display type; mono metadata; clipped panels; restrained motion.
+  Testing: test observable user behavior, prefer real boundaries, keep mocks minimal, and use SIFERS (Simple Injectable Functions Explicitly Returning State) for repeated scenario setup.
+  Quality: npm lockfile and pinned Node/npm versions; the root check must cover format, lint, typecheck, unit tests, builds, OpenSpec validation, and Playwright on desktop and mobile.
+  Knowledge: OpenSpec holds behavioral truth; docs explain current architecture and decisions; scoped AGENTS.md files guide agents. Update durable documentation when implementation work reveals reusable facts or invalidates an assumption.
+
+rules:
+  proposal:
+    - State important non-goals and unresolved product decisions.
+    - Identify privacy, data-provider, and fairness impact when player data is involved.
+  specs:
+    - Describe behavior in observable terms and include failure, accessibility, and responsive scenarios where relevant.
+    - Do not specify live provider behavior until the provider and account-verification model are decided.
+  design:
+    - Record alternatives considered for material architecture or dependency choices.
+    - Explain test boundaries, documentation impact, and rollback for risky changes.
+  tasks:
+    - Include documentation, OpenSpec validation, and user-facing verification work.
+    - Keep every task independently verifiable and use the required checkbox format.

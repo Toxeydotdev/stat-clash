@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "react",
+    "jsx-a11y",
+    "vitest",
+    "jest",
+    "node"
+  ],
+  "categories": {
+    "correctness": "error"
+  },
+  "options": {
+    "reportUnusedDisableDirectives": "error"
+  },
+  "rules": {
+    "eqeqeq": "error",
+    "no-debugger": "error",
+    "typescript/consistent-type-imports": "error"
+  },
+  "env": {
+    "builtin": true
+  },
+  "overrides": [
+    {
+      "files": ["apps/web/src/**/*.{ts,tsx}", "libs/ui/src/**/*.{ts,tsx}"],
+      "env": {
+        "browser": true
+      }
+    },
+    {
+      "files": ["**/*.{spec,test}.{ts,tsx}"],
+      "env": {
+        "jest": true,
+        "vitest": true
+      }
+    },
+    {
+      "files": [
+        "apps/api/**/*.ts",
+        "**/*.{config,preset}.{js,ts,mts,cts}",
+        "webpack.config.js"
+      ],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}
