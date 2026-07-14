@@ -34,7 +34,7 @@ Reimplementing the two routes as native Netlify handlers was rejected because it
 
 ### Compile Nest with the existing TypeScript-backed Webpack build
 
-Add the serverless adapter as a secondary API build entry. A thin Netlify function wraps that compiled handler with `@netlify/aws-lambda-compat`, allowing `serverless-http` to run on Netlify's modern Functions runtime. This preserves emitted dependency-injection metadata while still letting Netlify bundle the generated JavaScript and external runtime packages.
+Add the serverless adapter as a secondary API build entry. A thin Netlify function wraps that compiled handler with `@netlify/aws-lambda-compat`, allowing `serverless-http` to run on Netlify's modern Functions runtime. This preserves emitted dependency-injection metadata. The generated handler leaves framework imports external, so Netlify configuration explicitly packages those modules and their dependency trees with the function.
 
 Compiling the Nest source directly as a TypeScript Netlify function was rejected because esbuild does not support TypeScript's `emitDecoratorMetadata` output.
 
@@ -47,6 +47,7 @@ Keep routing explicit in `netlify.toml`: `/api/*` is a forced rewrite to the fun
 - [Nest cold starts add latency] -> Cache initialization for warm invocations and keep the current API dependency graph small.
 - [Function and standalone setup could diverge] -> Centralize global Nest configuration and exercise the same controllers and services in both entry points.
 - [Generated API JavaScript could be missing during function bundling] -> Make the Netlify build command run the normal production build before Netlify packages functions.
+- [Local function emulation can resolve undeclared workspace packages] -> Declare every generated handler external in `external_node_modules` and validate an isolated production deploy.
 - [A broad SPA fallback could capture API traffic] -> Place a forced `/api/*` rewrite before the non-forced fallback and verify both API endpoints through Netlify's local runtime.
 - [Netlify runtime support changes] -> Use the modern Functions runtime through the maintained Lambda compatibility adapter rather than the deprecated legacy handler mode.
 

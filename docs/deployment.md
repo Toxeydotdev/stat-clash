@@ -42,6 +42,8 @@ The API production build has two Webpack entries:
 
 Both entries use the TypeScript-backed Nx Webpack build. This is required because Nest dependency injection relies on `emitDecoratorMetadata`, which Netlify's esbuild function bundler does not emit from TypeScript source. The thin `.mjs` function wraps the already compiled handler with `@netlify/aws-lambda-compat`, placing `serverless-http` on Netlify's modern Functions runtime.
 
+The generated Webpack handler deliberately leaves framework packages external. The function wrapper imports those runtimes directly and the `[functions].external_node_modules` list in `netlify.toml` makes Netlify include Nest, Express, RxJS, reflection metadata, and their dependency trees in the function archive. Keep the imports and list aligned with the external `require()` calls in `dist/apps/api/netlify.js`; local Netlify Dev can resolve undeclared packages from the workspace and therefore does not expose a missing production dependency.
+
 Do not commit `dist`. Netlify runs the production build before packaging functions, so the generated handler exists when the function bundler resolves it.
 
 ## Connect The Site

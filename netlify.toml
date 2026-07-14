@@ -10,6 +10,16 @@ NPM_VERSION = "11.9.0"
 [functions]
 directory = "netlify/functions"
 node_bundler = "esbuild"
+external_node_modules = [
+  "@nestjs/common",
+  "@nestjs/core",
+  "@nestjs/platform-express",
+  "express",
+  "reflect-metadata",
+  "rxjs",
+  "serverless-http",
+  "tslib",
+]
 
 [[redirects]]
 from = "/api/*"
