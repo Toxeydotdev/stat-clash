@@ -65,9 +65,11 @@ Use the repository command for a CLI release:
 npm run deploy:prod
 ```
 
-It uses the pinned Netlify CLI version, waits for the production deployment, then runs non-cached desktop and mobile Playwright against `https://stat-clash.netlify.app`. A failed deploy or any failed browser, API, fallback, or CDN assertion makes the command fail.
+It uses the pinned Netlify CLI version, waits for the production deployment, then runs non-cached desktop and mobile Playwright against `https://stat-clash.netlify.app`. A failed deploy or any failed browser, API, fallback, deployment-identity, or CDN assertion makes the command fail.
 
-Netlify Git deployments are validated by `.github/workflows/deployment-validation.yml` when GitHub receives a successful Netlify deployment status. The workflow can also be started manually with a deploy or preview URL. To validate another URL locally:
+Every production build writes `/deployment.json` with its source commit and serves that file with `Cache-Control: no-store`. On each push to `main`, `.github/workflows/deployment-validation.yml` waits until that public marker matches the pushed commit before running Playwright. This correlation prevents the workflow from validating the previous production deploy while a new Netlify build is still running. Superseded push runs are cancelled, matching Netlify's latest-revision delivery behavior.
+
+The workflow can also be started manually with a deploy or preview URL; manual checks validate the supplied deployment immediately instead of waiting for a specific commit. To validate another URL locally:
 
 ```sh
 DEPLOYMENT_URL=https://deploy-preview.example.netlify.app npm run check:deployment

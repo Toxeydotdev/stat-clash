@@ -8,7 +8,7 @@
     "dev": "nx run-many --target=serve --projects=api,web --parallel=2",
     "dev:api": "nx run api:serve",
     "dev:web": "nx run web:serve",
-    "build": "nx run-many --target=build --all --exclude=workspace --outputStyle=static",
+    "build": "nx run-many --target=build --all --exclude=workspace --outputStyle=static && node tools/write-deployment-metadata.mjs",
     "typecheck": "nx run-many --target=typecheck --all --exclude=workspace --outputStyle=static",
     "test": "nx run-many --target=test --all --exclude=workspace --outputStyle=static",
     "e2e": "nx run web-e2e:e2e --outputStyle=static",

@@ -1,7 +1,8 @@
 name: Deployment validation
 
 on:
-  deployment_status:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       deployment_url:
@@ -14,25 +15,40 @@ permissions:
   contents: read
 
 concurrency:
-  group: deployment-validation-${{ github.event.deployment.id || github.run_id }}
+  group: deployment-validation-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   post-deploy-checks:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.deployment_status.state == 'success' &&
-      contains(github.event.deployment_status.target_url, 'netlify'))
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       CI: true
-      DEPLOYMENT_URL: ${{ github.event.inputs.deployment_url || github.event.deployment_status.target_url || 'https://stat-clash.netlify.app' }}
+      DEPLOYMENT_URL: ${{ github.event.inputs.deployment_url || 'https://stat-clash.netlify.app' }}
     steps:
+      - name: Wait for the pushed revision
+        if: github.event_name == 'push'
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: |
+          for attempt in {1..60}; do
+            if curl --fail --silent --show-error \
+              --header 'Cache-Control: no-cache' \
+              "${DEPLOYMENT_URL%/}/deployment.json?commit=${EXPECTED_COMMIT}" \
+              | grep --fixed-strings --quiet "\"commit\":\"${EXPECTED_COMMIT}\""; then
+              echo "Production is serving ${EXPECTED_COMMIT}."
+              exit 0
+            fi
+
+            echo "Waiting for production revision ${EXPECTED_COMMIT} (${attempt}/60)..."
+            sleep 10
+          done
+
+          echo "Production did not publish ${EXPECTED_COMMIT} within 10 minutes."
+          exit 1
+
       - name: Check out deployed revision
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.deployment.sha || github.sha }}
 
       - name: Set up Node
         uses: actions/setup-node@v4

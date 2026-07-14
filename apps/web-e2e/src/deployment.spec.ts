@@ -66,3 +66,19 @@ test('serves production assets with immutable caching', async ({ request }) => {
   expect(cacheControl).toContain('max-age=31536000');
   expect(cacheControl).toContain('immutable');
 });
+
+test('publishes an uncached deployment identity', async ({ request }) => {
+  test.skip(
+    !isDeploymentValidation,
+    'Deployment identity exists only in a production build.',
+  );
+
+  const response = await request.get('/deployment.json');
+  const cacheControl = response.headers()['cache-control'];
+
+  expect(response.status()).toBe(200);
+  expect(cacheControl).toContain('no-store');
+  await expect(response.json()).resolves.toEqual({
+    commit: expect.stringMatching(/^(?:[0-9a-f]{40}|local)$/),
+  });
+});

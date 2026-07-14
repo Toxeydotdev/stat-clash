@@ -44,12 +44,13 @@ Netlify SHALL serve immutable built assets directly and SHALL fall back to the w
 
 ### Requirement: Post-deploy validation
 
-Every production deployment SHALL be followed by a non-cached validation against its public URL. The validation MUST fail when the application shell, browser fallback, immutable asset delivery, health endpoint, featured comparison, or JSON API not-found behavior does not match the deployed contract.
+Every production deployment SHALL be followed by a non-cached validation against its public URL. Git-backed validation MUST identify the exact deployed source revision before testing. The validation MUST fail when the application shell, browser fallback, immutable asset delivery, health endpoint, featured comparison, or JSON API not-found behavior does not match the deployed contract.
 
-#### Scenario: Production deployment completes
+#### Scenario: Production revision is published
 
-- **WHEN** Netlify reports a successful production deployment
-- **THEN** Playwright runs the product journeys and deployment-specific checks against that deployment URL without local web servers
+- **WHEN** a push to the production branch starts a Netlify Git deployment
+- **THEN** GitHub Actions waits for non-cached public deployment metadata to identify that pushed revision
+- **AND** Playwright runs the product journeys and deployment-specific checks against the production URL without local web servers
 - **AND** the release is not considered validated unless every desktop and mobile Chromium scenario passes
 
 #### Scenario: Contributor deploys from the CLI

@@ -29,7 +29,7 @@
 
 The production audit is intentionally outside `npm run check` because advisory data changes independently of a commit and is not deterministic. Run it during dependency review and scheduled maintenance.
 
-Remote deployment validation is also outside `npm run check` because network and CDN state are not deterministic local inputs. Deployment-routing behavior still runs locally in the complete gate. After Netlify publishes a site, `npm run check:deployment` reruns every product journey against the real URL and adds CDN-only assertions without Nx caching. CLI production deploys invoke that gate automatically, and `.github/workflows/deployment-validation.yml` handles Netlify deployment status events and manual URL validation.
+Remote deployment validation is also outside `npm run check` because network and CDN state are not deterministic local inputs. Deployment-routing behavior still runs locally in the complete gate. After Netlify publishes a site, `npm run check:deployment` reruns every product journey against the real URL and adds deployment-identity and CDN-only assertions without Nx caching. CLI production deploys invoke that gate automatically. On each push to `main`, `.github/workflows/deployment-validation.yml` waits for `/deployment.json` to identify the pushed revision before running the same gate; it also supports manual URL validation.
 
 The API production build emits both the standalone Node entry and the generated input for the Netlify Function. A Netlify-specific parity build can additionally be run with `npx --yes netlify-cli@26.2.0 build --offline --filter web`; it is outside the deterministic gate because the CLI is an external deployment tool rather than a locked workspace dependency. See [`deployment.md`](deployment.md).
 

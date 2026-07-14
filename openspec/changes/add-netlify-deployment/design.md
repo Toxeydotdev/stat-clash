@@ -42,6 +42,10 @@ Compiling the Nest source directly as a TypeScript Netlify function was rejected
 
 Keep routing explicit in `netlify.toml`: `/api/*` is a forced rewrite to the function and the final non-forced catch-all serves `index.html` for browser routes while allowing real static files to win. API failures and unknown API routes therefore cannot silently become HTML responses.
 
+### Correlate validation to the deployed revision
+
+Write a small `deployment.json` file after each production build using Netlify's `COMMIT_REF`, and prevent that marker from being cached. The GitHub deployment workflow starts on each push to `main`, waits until the production marker identifies that exact commit, and only then runs Playwright. This avoids both dependence on optional provider deployment events and false success against the previous atomic deploy. Manual workflow runs continue to accept an explicit deployment URL without revision polling.
+
 ## Risks / Trade-offs
 
 - [Nest cold starts add latency] -> Cache initialization for warm invocations and keep the current API dependency graph small.
@@ -50,6 +54,7 @@ Keep routing explicit in `netlify.toml`: `/api/*` is a forced rewrite to the fun
 - [Local function emulation can resolve undeclared workspace packages] -> Declare every generated handler external in `external_node_modules` and validate an isolated production deploy.
 - [A broad SPA fallback could capture API traffic] -> Place a forced `/api/*` rewrite before the non-forced fallback and verify both API endpoints through Netlify's local runtime.
 - [Netlify runtime support changes] -> Use the modern Functions runtime through the maintained Lambda compatibility adapter rather than the deprecated legacy handler mode.
+- [Post-deploy checks could reach the previous atomic deploy] -> Publish a no-cache commit marker and wait for an exact revision match before testing.
 
 ## Migration Plan
 
